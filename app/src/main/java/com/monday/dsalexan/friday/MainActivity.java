@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String task = String.valueOf(taskEditText.getText());
-                                DATABASE_HELPER.addTask(task, "2017-07-06 20:00:00.000", 0, 0);
+                                DATABASE_HELPER.addTask(task, "2017-07-06 20:00:00.000", 1, 1);
                                 updateUI();
                             }
                         })

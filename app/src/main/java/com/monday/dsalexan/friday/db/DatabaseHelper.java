@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.CategoriesTable.COL_CATEGORY_TITLE + "," +
                 DatabaseContract.CategoriesTable.COL_CATEGORY_PRIO + "," +
                 DatabaseContract.CategoriesTable.COL_CATEGORY_BOOK + ") VALUES (" +
-                "\"Urgent and Important\", 0, 0" + ");";
+                "\"Urgent and Important\", 0, 1" + ");";
         db.execSQL(addConstants);
 
         // TASKS
@@ -95,7 +95,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.BooksTable.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.CategoriesTable.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TasksTable.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TaskStatusTable.TABLE);
         onCreate(db);
     }
 
@@ -112,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insertWithOnConflict(DatabaseContract.TasksTable.TABLE,
                 null,
                 values,
-                SQLiteDatabase.CONFLICT_ABORT);
+                SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
 
