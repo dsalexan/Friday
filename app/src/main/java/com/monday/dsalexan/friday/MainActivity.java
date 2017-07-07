@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String task = String.valueOf(taskEditText.getText());
-                                DATABASE_HELPER.insert(task);
+                                DATABASE_HELPER.addTask(task, "2017-07-06 20:00:00.000", 0, 0);
                                 updateUI();
                             }
                         })
@@ -78,12 +78,12 @@ public class MainActivity extends AppCompatActivity {
     public void deleteTask(View view) {
         TextView taskTextView = (TextView)((View)view.getParent()).findViewById(R.id.task_title);
         String task = String.valueOf(taskTextView.getText());
-        DATABASE_HELPER.delete(task);
+        DATABASE_HELPER.deleteTask(task);
         updateUI();
     }
 
     private void updateUI() {
-        ArrayList<String> taskList = DATABASE_HELPER.listAll();
+        ArrayList<String> taskList = DATABASE_HELPER.listAllTasks();
 
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<>(this,
