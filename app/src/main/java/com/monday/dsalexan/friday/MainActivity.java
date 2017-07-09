@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper DATABASE_HELPER;
 
     private ListView mTaskListView;
-    private ArrayAdapter<String> mAdapter;
+    private TaskArrayAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +82,15 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
+    public void addReminder(View view){
+
+    }
+
     private void updateUI() {
-        ArrayList<String> taskList = DATABASE_HELPER.listAllTasks();
+        ArrayList<Task> taskList = DATABASE_HELPER.listAllTasks();
 
         if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<>(this,
+            mAdapter = new TaskArrayAdapter(this,
                     R.layout.item_todo,
                     R.id.task_title,
                     taskList);

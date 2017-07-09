@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.widget.ArrayAdapter;
 
 import com.monday.dsalexan.friday.R;
+import com.monday.dsalexan.friday.Task;
 
 import java.util.ArrayList;
 
@@ -90,7 +91,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         addConstants = "INSERT INTO " + DatabaseContract.TaskStatusTable.TABLE + "(" +
                 DatabaseContract.TaskStatusTable.COL_TASKSTATUS_TITLE + ") VALUES (" +
                 "\"FOCUSED\"" + ");";
-        db.execSQL(addConstants);/**/
+        db.execSQL(addConstants);
+
+        // REMINDERS
+        createTable = "CREATE TABLE " + DatabaseContract.RemindersTable.TABLE + " ( " +
+                DatabaseContract.RemindersTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DatabaseContract.RemindersTable.COL_REMINDERS_TASK + " TEXT NOT NULL," +
+                DatabaseContract.RemindersTable.COL_REMINDERS_DATE + " TEXT," +
+                DatabaseContract.RemindersTable.COL_REMINDERS_LOCATION + " TEXT," +
+                DatabaseContract.RemindersTable.COL_REMINDERS_LOCATION_STATUS + " INTEGER," +
+                "FOREIGN KEY(" + DatabaseContract.RemindersTable.COL_REMINDERS_TASK + ") REFERENCES " + DatabaseContract.TasksTable.TABLE + "(" + DatabaseContract.TasksTable._ID + ")"+ ");";
+        db.execSQL(createTable);
+
+        /**/
     }
 
     @Override
@@ -115,7 +128,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insertWithOnConflict(DatabaseContract.TasksTable.TABLE,
                 null,
                 values,
-                SQLiteDatabase.CONFLICT_REPLACE);
+                SQLiteDatabase.CONFLICT_ABORT);
+        db.close();
+    }
+
+    public void addReminder(int task, String date, String location, Integer location_status){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.RemindersTable.COL_REMINDERS_TASK, task);
+        if(date != null) values.put(DatabaseContract.RemindersTable.COL_REMINDERS_DATE, date);
+        if(location != null) values.put(DatabaseContract.RemindersTable.COL_REMINDERS_LOCATION, location);
+        if(location_status != null) values.put(DatabaseContract.RemindersTable.COL_REMINDERS_LOCATION_STATUS, location_status);
+
+
+        db.insertWithOnConflict(DatabaseContract.TasksTable.TABLE,
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_ABORT);
         db.close();
     }
 
@@ -129,8 +159,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /* FINDS */
-    public ArrayList<String> listAllTasks(){
-        ArrayList<String> taskList = new ArrayList<>();
+    public ArrayList<Task> listAllTasks(){
+        ArrayList<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(DatabaseContract.TasksTable.TABLE,
@@ -138,8 +168,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            int idx = cursor.getColumnIndex(DatabaseContract.TasksTable.COL_TASK_TITLE);
-            taskList.add(cursor.getString(idx));
+            int id = cursor.getColumnIndex(DatabaseContract.TasksTable._ID);
+            int ttl = cursor.getColumnIndex(DatabaseContract.TasksTable.COL_TASK_TITLE);
+            taskList.add(new Task(Integer.parseInt(cursor.getString(id)), cursor.getString(ttl)));
         }
 
         cursor.close();

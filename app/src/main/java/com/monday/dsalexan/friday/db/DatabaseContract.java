@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 
 public class DatabaseContract {
     public static final String DB_NAME = "com.monday.dsalexan.friday.db";
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 8;
 
     private DatabaseContract() {}
 
@@ -31,6 +31,15 @@ public class DatabaseContract {
         public static final String COL_TASKSTATUS_TITLE = "title";
     }
 
+    public class RemindersTable implements BaseColumns{
+        public static final String TABLE = "reminders";
+
+        public static final String COL_REMINDERS_TASK = "task";
+        public static final String COL_REMINDERS_DATE = "date";
+        public static final String COL_REMINDERS_LOCATION = "location";
+        public static final String COL_REMINDERS_LOCATION_STATUS = "location_status"; // 0 - arriving, 1 - leaving
+    }
+
     public class BooksTable implements BaseColumns{
         public static final String TABLE = "books";
 
@@ -43,6 +52,13 @@ public class DatabaseContract {
         public static final String COL_CATEGORY_TITLE = "title";
         public static final String COL_CATEGORY_PRIO = "prio";
         public static final String COL_CATEGORY_BOOK = "book";
+    }
+
+    public class LogsTable implements BaseColumns{
+        public static final String TABLE = "logs";
+
+        public static final String COL_LOGS_LOG = "log";
+        public static final String COL_LOGS_DATE = "date";
     }
 
 

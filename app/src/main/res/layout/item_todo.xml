@@ -19,7 +19,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="Done"
-        android:onClick="deleteTask"/>
+        android:onClick="deleteTask"
+        android:text="X"
+        android:layout_alignBottom="@+id/add_reminder" />
+
+    <Button
+        android:id="@+id/add_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/task_delete"
+        android:text="ADD"
+        android:onClick="addReminder" />
 
 </RelativeLayout>
