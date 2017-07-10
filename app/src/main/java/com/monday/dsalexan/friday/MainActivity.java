@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper DATABASE_HELPER;
 
     private ListView mTaskListView;
-    private TaskArrayAdapter mAdapter;
+    private TaskArrayAdapter taskAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String task = String.valueOf(taskEditText.getText());
-                                DATABASE_HELPER.addTask(task, "2017-07-06 20:00:00.000", 1, 1);
+                                DATABASE_HELPER.addTask(task, "2017-07-06 20:00:00.000", 1, Task.Status.ACTIVE.getValue());
                                 updateUI();
                             }
                         })
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void deleteTask(View view) {
+        Log.d(TAG, "Removing a task");
         TextView taskTextView = (TextView)((View)view.getParent()).findViewById(R.id.task_title);
         String task = String.valueOf(taskTextView.getText());
         DATABASE_HELPER.deleteTask(task);
@@ -83,22 +84,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addReminder(View view){
+        TextView taskTextView = (TextView)((View)view.getParent()).findViewById(R.id.task_title);
+        final Integer taskId = (Integer)taskTextView.getTag();
 
+        Log.d(TAG, "Add a new reminder");
+        final EditText taskEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Add a new reminder")
+                .setView(taskEditText)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String date = String.valueOf(taskEditText.getText());
+                        DATABASE_HELPER.addReminder(taskId, date, null, null);
+                        updateUI();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
     }
 
     private void updateUI() {
         ArrayList<Task> taskList = DATABASE_HELPER.listAllTasks();
 
-        if (mAdapter == null) {
-            mAdapter = new TaskArrayAdapter(this,
+        if (taskAdapter == null) {
+            taskAdapter = new TaskArrayAdapter(this,
                     R.layout.item_todo,
                     R.id.task_title,
+                    R.id.task_reminders,
+                    R.layout.item_reminder,
                     taskList);
-            mTaskListView.setAdapter(mAdapter);
+            mTaskListView.setAdapter(taskAdapter);
         } else {
-            mAdapter.clear();
-            mAdapter.addAll(taskList);
-            mAdapter.notifyDataSetChanged();
+            taskAdapter.clear();
+            taskAdapter.addAll(taskList);
+            taskAdapter.notifyDataSetChanged();
         }
     }
 }

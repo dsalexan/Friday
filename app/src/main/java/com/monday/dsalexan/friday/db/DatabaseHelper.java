@@ -6,10 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.provider.ContactsContract;
 import android.widget.ArrayAdapter;
 
 import com.monday.dsalexan.friday.R;
+import com.monday.dsalexan.friday.Reminder;
 import com.monday.dsalexan.friday.Task;
 
 import java.util.ArrayList;
@@ -103,6 +105,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + DatabaseContract.RemindersTable.COL_REMINDERS_TASK + ") REFERENCES " + DatabaseContract.TasksTable.TABLE + "(" + DatabaseContract.TasksTable._ID + ")"+ ");";
         db.execSQL(createTable);
 
+        // LOGS
+        createTable = "CREATE TABLE " + DatabaseContract.LogsTable.TABLE + " ( " +
+                DatabaseContract.LogsTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DatabaseContract.LogsTable.COL_LOGS_LOG + " TEXT NOT NULL," +
+                DatabaseContract.LogsTable.COL_LOGS_DATE + " TEXT" + ");";
+        db.execSQL(createTable);
+
         /**/
     }
 
@@ -112,10 +121,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.CategoriesTable.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TasksTable.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TaskStatusTable.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.RemindersTable.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.LogsTable.TABLE);
         onCreate(db);
     }
 
     /* INSERTS */
+    //todo Ver se é melhor mudar o argumento do insert para tipo TASK
     public void addTask(String title, String date, int category, int status){
         SQLiteDatabase db = getWritableDatabase();
 
@@ -142,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(location_status != null) values.put(DatabaseContract.RemindersTable.COL_REMINDERS_LOCATION_STATUS, location_status);
 
 
-        db.insertWithOnConflict(DatabaseContract.TasksTable.TABLE,
+        db.insertWithOnConflict(DatabaseContract.RemindersTable.TABLE,
                 null,
                 values,
                 SQLiteDatabase.CONFLICT_ABORT);
@@ -159,18 +171,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /* FINDS */
+    //done Adicionar pesquisa por reminders tb
     public ArrayList<Task> listAllTasks(){
         ArrayList<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
+        // get all tasks
         Cursor cursor = db.query(DatabaseContract.TasksTable.TABLE,
-                new String[]{DatabaseContract.TasksTable._ID, DatabaseContract.TasksTable.COL_TASK_TITLE},
+                new String[]{DatabaseContract.TasksTable._ID, DatabaseContract.TasksTable.COL_TASK_TITLE, DatabaseContract.TasksTable.COL_TASK_STATUS},
                 null, null, null, null, null);
 
         while (cursor.moveToNext()) {
             int id = cursor.getColumnIndex(DatabaseContract.TasksTable._ID);
             int ttl = cursor.getColumnIndex(DatabaseContract.TasksTable.COL_TASK_TITLE);
-            taskList.add(new Task(Integer.parseInt(cursor.getString(id)), cursor.getString(ttl)));
+            int stts = cursor.getColumnIndex(DatabaseContract.TasksTable.COL_TASK_STATUS);
+
+            Cursor c2 = db.query(DatabaseContract.RemindersTable.TABLE,
+                    new String[]{DatabaseContract.RemindersTable.COL_REMINDERS_DATE},
+                    DatabaseContract.RemindersTable.COL_REMINDERS_TASK + " = ?",
+                    new String[]{cursor.getString(id)},
+                    null, null, null);
+
+            ArrayList<Reminder> r = new ArrayList<>();
+            while (c2.moveToNext()){
+                int dt = c2.getColumnIndex(DatabaseContract.RemindersTable.COL_REMINDERS_DATE);
+
+                r.add(new Reminder(c2.getString(dt)));
+            }
+
+            c2.close();
+
+            taskList.add(new Task(cursor.getInt(id), cursor.getString(ttl), Task.Status.fromInteger(cursor.getInt(stts)), r));
         }
 
         cursor.close();

@@ -32,4 +32,11 @@
         android:text="ADD"
         android:onClick="addReminder" />
 
+    <ListView
+        android:id="@+id/task_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/task_delete" />
+
 </RelativeLayout>

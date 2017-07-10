@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reminder_date"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="2017-09-07 16:11:00.000">
+
+</TextView>
