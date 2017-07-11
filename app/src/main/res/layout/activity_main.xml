@@ -5,8 +5,11 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context="com.monday.dsalexan.friday.MainActivity">
 
-<ListView
-    android:id="@+id/list_todo"
+<ExpandableListView
+    android:id="@+id/tasks_list"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+    android:divider="@android:color/darker_gray"
+    android:dividerHeight="0.5dp"/>
 </RelativeLayout>

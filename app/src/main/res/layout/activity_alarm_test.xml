@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.monday.dsalexan.friday.AlarmTest">
+
+    <TimePicker
+        android:id="@+id/time_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-2dp" />
+
+    <Button
+        android:id="@+id/button_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ON"
+        tools:layout_editor_absoluteX="280dp"
+        tools:layout_editor_absoluteY="349dp"
+        android:layout_alignBaseline="@+id/button_off"
+        android:layout_alignBottom="@+id/button_off"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="13dp"
+        android:onClick="turnAlarmOn"/>
+
+    <Button
+        android:id="@+id/button_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OFF"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="349dp"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/time_alarm"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:onClick="turnAlarmOff"/>
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="off"
+        tools:layout_editor_absoluteX="183dp"
+        tools:layout_editor_absoluteY="369dp"
+        android:layout_alignBaseline="@+id/button_on"
+        android:layout_alignBottom="@+id/button_on"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

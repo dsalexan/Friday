@@ -13,8 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monday.dsalexan.friday.db.DatabaseContract;
 import com.monday.dsalexan.friday.db.DatabaseHelper;
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView mTaskListView;
     private TaskArrayAdapter taskAdapter;
 
+    private ExpandableListView tasks_list;
+    private ExpandableTaskArrayAdapter expandableTaskAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         DATABASE_HELPER = new DatabaseHelper(this);
 
-        mTaskListView = (ListView)findViewById(R.id.list_todo);
+        //mTaskListView = (ListView)findViewById(R.id.list_todo);
+        tasks_list = (ExpandableListView)findViewById(R.id.tasks_list);
 
         updateUI();
     }
@@ -106,20 +112,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        ArrayList<Task> taskList = DATABASE_HELPER.listAllTasks();
+        final ArrayList<Task> taskList = DATABASE_HELPER.listAllTasks();
 
-        if (taskAdapter == null) {
-            taskAdapter = new TaskArrayAdapter(this,
+        if (expandableTaskAdapter == null) {
+            expandableTaskAdapter = new ExpandableTaskArrayAdapter(this,
+                    R.layout.item_todo,
+                    R.layout.item_reminder,
+                    R.id.task_title,
+                    R.id.reminder_date,
+                    taskList);
+
+            tasks_list.setAdapter(expandableTaskAdapter);
+
+            /*taskAdapter = new TaskArrayAdapter(this,
                     R.layout.item_todo,
                     R.id.task_title,
                     R.id.task_reminders,
                     R.layout.item_reminder,
                     taskList);
-            mTaskListView.setAdapter(taskAdapter);
+            mTaskListView.setAdapter(taskAdapter);*/
         } else {
-            taskAdapter.clear();
+            /*taskAdapter.clear();
             taskAdapter.addAll(taskList);
-            taskAdapter.notifyDataSetChanged();
+            taskAdapter.notifyDataSetChanged();*/
+            expandableTaskAdapter.clear();
+            expandableTaskAdapter.addAll(taskList);
+            expandableTaskAdapter.notifyDataSetChanged();
         }
     }
 }

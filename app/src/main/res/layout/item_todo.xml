@@ -8,10 +8,12 @@
         android:id="@+id/task_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="Hello"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"/>
 
     <Button
         android:id="@+id/task_delete"
@@ -21,7 +23,9 @@
         android:layout_alignParentRight="true"
         android:onClick="deleteTask"
         android:text="X"
-        android:layout_alignBottom="@+id/add_reminder" />
+        android:layout_alignBottom="@+id/add_reminder"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
     <Button
         android:id="@+id/add_reminder"
@@ -30,13 +34,8 @@
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/task_delete"
         android:text="ADD"
-        android:onClick="addReminder" />
-
-    <ListView
-        android:id="@+id/task_reminders"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/task_delete" />
+        android:onClick="addReminder"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
 </RelativeLayout>
